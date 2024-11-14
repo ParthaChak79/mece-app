@@ -8,6 +8,7 @@ import { ThemeToggle } from './components/ThemeToggle';
 import { useProblemStore } from './store/problemStore';
 import { generateMECEAnalysis } from './services/openai';
 import { Plus } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 function App() {
   const {
@@ -68,38 +69,54 @@ function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors">
       <ThemeToggle />
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent mb-4">
             MECE Problem Solver
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+          <p className="text-lg text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
             Select a business or personal challenge to analyze using the MECE framework
           </p>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => setShowAddProblemModal(true)}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all shadow-md hover:shadow-lg"
           >
             <Plus className="mr-2" size={20} />
             Add New Problem
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {problems.map((problem) => (
-            <ProblemCard
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+          {problems.map((problem, index) => (
+            <motion.div
               key={problem.id}
-              problem={problem}
-              onClick={() => handleProblemSelect(problem)}
-            />
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <ProblemCard
+                problem={problem}
+                onClick={() => handleProblemSelect(problem)}
+              />
+            </motion.div>
           ))}
         </div>
 
         {isAnalyzing && <LoadingAnalysis />}
 
         {error && (
-          <div className="mt-8 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 rounded-md">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="mt-8 p-4 bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-100 rounded-lg shadow-md"
+          >
             {error}
-          </div>
+          </motion.div>
         )}
 
         {selectedProblem && analysis && !isAnalyzing && (
